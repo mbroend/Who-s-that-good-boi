@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Doggos</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Who's that doggo?</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="https://github.com/mbroend">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="jumbotron">
+    <div class="container">
+        <h1 class="text-center">Who's that doggo?</h1>
+        <p class="text-center">Analyzing message data for disaster response</p>
+        <hr />
+
+        <div class="row">
+            <div class="col-lg-12 form-group-lg">
+                <form action="/go" method="get">
+                    <input type="text" class="form-control form-control-lg" name="query" placeholder="Enter a message to classify">
+                    <div class="col-lg-offset-5">
+                        <button type="submit" class="btn btn-lg btn-success">Classify Message</button>
+						<input id="userImage" type="file" name="image" accept="image/*" capture="camera">
+						<img id="uploadedImage" src="#" alt="" ><!--height="42" width="42">-->
+						<p id="test"> lolol </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% block message %}
+        {% endblock %}
+    </div>
+</div>
+
+<div class="container">
+    {% block content %}
+        <div class="page-header">
+            <h1 class="text-center">Overview of Training Dataset</h1>
+        </div>
+    {% endblock %}
+
+    {% for id in ids %}
+        <div id="{{id}}"></div>
+    {% endfor %}
+</div>
+
+<script type="text/javascript">
+	var myInput = document.getElementById('userImage');
+	var img = document.querySelector('img');
+	function sendPic() {
+		var file = myInput.files[0];
+		
+		document.getElementById('uploadedImage').src = window.URL.createObjectURL(file)
+		document.getElementById('test').innerHTML = file.name
+    // Send file here either by adding it to a `FormData` object 
+    // and sending that via XHR, or by simply passing the file into 
+    // the `send` method of an XHR instance.
+	let formData = new FormData();
+	formData.append('image' , file);
+	console.log(myInput.files[0].name);
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', 'http://localhost:5000/test', true);
+	xhr.onload = function () {
+		// do something to response
+		console.log(this.responseText);
+	};
+	xhr.send(formData);
+	<!-- $.ajax({ -->
+				<!-- url: "https://localhost:5000/test", // fix this to your liking -->
+				<!-- type: "post", -->
+				<!-- data: formdata, -->
+				<!-- cache: false, -->
+				<!-- processdata:false, -->
+				<!-- contenttype:false, -->
+				<!-- error: function(data){ -->
+					<!-- console.log("upload error" , data); -->
+					<!-- console.log(data.getallresponseheaders()); -->
+				<!-- }, -->
+				<!-- success: function(data){ -->
+					<!-- // alert("hello"); // if it's failing on actual server check your server firewall + set up cors -->
+					<!-- bytestring = data['status'] -->
+					<!-- image = bytestring.split('\'')[1] -->
+					<!-- imagebox.attr('src' , 'data:image/jpeg;base64,'+image) -->
+				<!-- } -->
+			<!-- }); -->
+	}
+
+	myInput.addEventListener('change', sendPic, false);
+    <!-- const graphs = {{graphJSON | safe}}; -->
+    <!-- const ids = {{ids | safe}}; -->
+    <!-- for(let i in graphs) { -->
+        <!-- Plotly.plot(ids[i], graphs[i].data, graphs[i].layout); -->
+    <!-- } -->
+</script>
+
+</body>
+</html>
