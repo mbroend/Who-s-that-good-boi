@@ -32,39 +32,33 @@
 <div class="jumbotron">
     <div class="container">
         <h1 class="text-center">Who's that doggo?</h1>
-        <p class="text-center">Analyzing message data for disaster response</p>
+
         <hr />
 
         <div class="row">
-            <div class="col-lg-12 form-group-lg">
-                <form action="/go" method="get">
-                    <input type="text" class="form-control form-control-lg" name="query" placeholder="Enter a message to classify">
-                    <div class="col-lg-offset-5">
-                        <button type="submit" class="btn btn-lg btn-success">Classify Message</button>
-						<input id="userImage" type="file" name="image" accept="image/*" capture="camera">
-						<img id="uploadedImage" src="#" alt="" ><!--height="42" width="42">-->
-						<p id="test"> lolol </p>
-                    </div>
-                </form>
-            </div>
-        </div>
+            <div class="col-lg-12 col-sm-12 col-xs-12 form-group-lg">
+				<div class="row">
+					<div align="center">
+						<input class="custom-file-input" id="userImage" type="file" name="image" accept="image/*" capture="camera" >
+							<p id="race"></p>	
+					</div>
+					<div class="col-lg-6 col-sm-6 col-xs-6 " align="center">
+						<img id="uploadedImage" src="#" alt="" width="70%" align="center">	
+					</div>
+					<div class="col-lg-6 col-sm-6 col-xs-6" align="center">
+						
+						<img id="returnImage" src="#" alt="" width="70%">
+						<p id="loading"><p>
+					</div>
+				</div>
+			</div>
+		</div>
 
-        {% block message %}
-        {% endblock %}
+
     </div>
 </div>
 
-<div class="container">
-    {% block content %}
-        <div class="page-header">
-            <h1 class="text-center">Overview of Training Dataset</h1>
-        </div>
-    {% endblock %}
 
-    {% for id in ids %}
-        <div id="{{id}}"></div>
-    {% endfor %}
-</div>
 
 <script type="text/javascript">
 	var myInput = document.getElementById('userImage');
@@ -73,39 +67,31 @@
 		var file = myInput.files[0];
 		
 		document.getElementById('uploadedImage').src = window.URL.createObjectURL(file)
-		document.getElementById('test').innerHTML = file.name
-    // Send file here either by adding it to a `FormData` object 
-    // and sending that via XHR, or by simply passing the file into 
-    // the `send` method of an XHR instance.
-	let formData = new FormData();
-	formData.append('image' , file);
-	console.log(myInput.files[0].name);
-	
-	var xhr = new XMLHttpRequest();
-	xhr.open('POST', 'http://192.168.0.10:5000/test', true);
-	xhr.onload = function () {
-		// do something to response
-		console.log(this.responseText);
-	};
-	xhr.send(formData);
-	<!-- $.ajax({ -->
-				<!-- url: "https://192.168.0.10:5000/test", // fix this to your liking -->
-				<!-- type: "post", -->
-				<!-- data: formdata, -->
-				<!-- cache: false, -->
-				<!-- processdata:false, -->
-				<!-- contenttype:false, -->
-				<!-- error: function(data){ -->
-					<!-- console.log("upload error" , data); -->
-					<!-- console.log(data.getallresponseheaders()); -->
-				<!-- }, -->
-				<!-- success: function(data){ -->
-					<!-- // alert("hello"); // if it's failing on actual server check your server firewall + set up cors -->
-					<!-- bytestring = data['status'] -->
-					<!-- image = bytestring.split('\'')[1] -->
-					<!-- imagebox.attr('src' , 'data:image/jpeg;base64,'+image) -->
-				<!-- } -->
-			<!-- }); -->
+		// Send file here either by adding it to a `FormData` object 
+		// and sending that via XHR, or by simply passing the file into 
+		// the `send` method of an XHR instance.
+		let formData = new FormData();
+		formData.append('image' , file);
+		//console.log(myInput.files[0].name);
+		
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', '/predict', true);
+		document.getElementById("loading").innerHTML = "Busy barking at people on the street..."
+		document.getElementById("returnImage").src = "/static/images/download.gif"
+		xhr.onload = function () {
+			// do something to response
+			data = JSON.parse(this.response)
+			console.log(data);
+			doggo_yn = data[1]['doggo_yn']
+			human_yn = data[2]['human_yn']
+			document.getElementById('race').innerHTML = "It's a " + data[3]['race']
+			bytestring = data[4]['dream']
+			image = bytestring.split('\'')[1]
+			document.getElementById("loading").innerHTML = ""
+			document.getElementById("returnImage").src = "data:image/png;base64," + image
+		};
+		xhr.send(formData);
+
 	}
 
 	myInput.addEventListener('change', sendPic, false);

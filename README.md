@@ -22,3 +22,7 @@
 	
 	
 "Heck ur doing me a bamboozle fren"
+
+
+## Packages and Libraries
+* OpenCV 4.20 https://sourceforge.net/projects/opencvlibrary/files/latest/download
