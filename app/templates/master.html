@@ -22,6 +22,7 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
+				<li><a href="https://www.npr.org/sections/alltechconsidered/2017/04/23/524514526/dogs-are-doggos-an-internet-language-built-around-love-for-the-puppers?t=1580668262124">DoggoLingo</a></li>
                 <li><a href="https://github.com/mbroend">Contact</a></li>
             </ul>
         </div>
@@ -82,13 +83,26 @@
 			// do something to response
 			data = JSON.parse(this.response)
 			console.log(data);
-			doggo_yn = data[1]['doggo_yn']
-			human_yn = data[2]['human_yn']
-			document.getElementById('race').innerHTML = "It's a " + data[3]['race']
+			doggo_yn = data[1]['dog']
+			human_yn = data[2]['human']
+			console.log(doggo_yn)
 			bytestring = data[4]['dream']
 			image = bytestring.split('\'')[1]
-			document.getElementById("loading").innerHTML = ""
-			document.getElementById("returnImage").src = "data:image/png;base64," + image
+			if (human_yn == "True") {
+				document.getElementById("loading").innerHTML = ""
+				document.getElementById('race').innerHTML = "Heck human-fren, ur doin me a bamboozle!<br>But you looke like a: " + data[3]['race']
+				document.getElementById("returnImage").src = "data:image/png;base64," + image
+			}
+			else if (doggo_yn == "True") {
+				document.getElementById("loading").innerHTML = ""
+				document.getElementById("returnImage").src = "data:image/png;base64," + image
+				document.getElementById('race').innerHTML = "It's a " + data[3]['race']
+			}
+			else {
+				document.getElementById("loading").innerHTML = "Dogfessor says: Not fren"
+				document.getElementById('race').innerHTML = ""
+				document.getElementById("returnImage").src = "/static/images/professor.jfif"
+			}
 		};
 		xhr.send(formData);
 

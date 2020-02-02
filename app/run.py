@@ -10,7 +10,7 @@ from plotly.graph_objs import Bar, Violin, Box
 from io import BytesIO
 import base64
 import tensorflow as tf
-#import cv2
+import cv2
 from keras import backend as k
 from keras.applications.resnet50 import ResNet50, decode_predictions
 from keras.applications.resnet50 import preprocess_input as rn50_preprocess_input
@@ -78,7 +78,7 @@ with session.graph.as_default():
 
 ### Human detector
 # extract pre-trained face detector
-#face_cascade = cv2.CascadeClassifier('models/haarcascade_frontalface_alt.xml')
+face_cascade = cv2.CascadeClassifier('models/haarcascade_frontalface_alt.xml')
 
 # index webpage displays cool visuals and receives user input text for model
 @app.route('/')
@@ -95,6 +95,8 @@ def predict():
     byte_img = request.files['image'].read()
     # Transform bytes to image
     img = Image.open(BytesIO(byte_img))
+    # Converts all to RGB format
+    img = img.convert("RGB")
     # Resize to fit input of model
     img_resize = img.resize((224,224))
     # convert PIL.Image.Image type to 3D tensor with shape (224, 224, 3)
@@ -102,25 +104,28 @@ def predict():
     # 4d tensor
     tensor = np.expand_dims(x, axis=0)
     # Human face detection
-    # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # faces = face_cascade.detectMultiScale(gray)
-    # human_yn = len(faces) > 0
-    human_yn = False
+    npimg = np.fromstring(byte_img, np.uint8)
+    img_cv2 = cv2.imdecode(npimg,cv2.IMREAD_COLOR)
+    gray = cv2.cvtColor(img_cv2, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray)
+    human_yn = len(faces) > 0
 
     with session.graph.as_default():
         k.set_session(session)
-        rn50_preprocess = rn50_preprocess_input(tensor)
-        doggo_pred = np.argmax(ResNet50_model.predict(rn50_preprocess))
-        doggo_yn = ((doggo_pred <= 268) & (doggo_pred >= 151))
+        if human_yn:
+            doggo_yn = False
+        else:
+            rn50_preprocess = rn50_preprocess_input(tensor)
+            doggo_pred = np.argmax(ResNet50_model.predict(rn50_preprocess))
+            # Imagenet labels https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a
+            doggo_yn = ((doggo_pred <= 268) & (doggo_pred >= 151))
         irnv2_preprocess = irnv2_preproccess_input(tensor)
         # Bottleneck features for dog race
         bottleneck = model_cropped.predict(irnv2_preprocess)
         # Dog race prediction
         race_pred = doggo_model.predict(bottleneck)
     
-    print(doggo_yn)
     race = dog_names[np.argmax(race_pred)]
-    print(race)
     
     
     # Sending image back
