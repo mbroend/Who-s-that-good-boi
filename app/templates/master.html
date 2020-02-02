@@ -90,7 +90,7 @@
 			image = bytestring.split('\'')[1]
 			if (human_yn == "True") {
 				document.getElementById("loading").innerHTML = ""
-				document.getElementById('race').innerHTML = "Heck human-fren, ur doin me a bamboozle!<br>But you looke like a: " + data[3]['race']
+				document.getElementById('race').innerHTML = "Heck human-fren, ur doin me a bamboozle!<br>But you look like a: " + data[3]['race']
 				document.getElementById("returnImage").src = "data:image/png;base64," + image
 			}
 			else if (doggo_yn == "True") {
@@ -109,11 +109,7 @@
 	}
 
 	myInput.addEventListener('change', sendPic, false);
-    <!-- const graphs = {{graphJSON | safe}}; -->
-    <!-- const ids = {{ids | safe}}; -->
-    <!-- for(let i in graphs) { -->
-        <!-- Plotly.plot(ids[i], graphs[i].data, graphs[i].layout); -->
-    <!-- } -->
+
 </script>
 
 </body>

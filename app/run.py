@@ -1,12 +1,10 @@
 import json
-import plotly
 import numpy as np
 import pandas as pd
 import os , io , sys
 
 from flask import Flask
 from flask import render_template, request, jsonify
-from plotly.graph_objs import Bar, Violin, Box
 from io import BytesIO
 import base64
 import tensorflow as tf
@@ -25,9 +23,6 @@ from tqdm import tqdm
 from glob import glob
 from PIL import ImageFile, Image                           
 ImageFile.LOAD_TRUNCATED_IMAGES = True    
-#
-
-
 
 
 app = Flask(__name__,static_url_path='/static')
@@ -136,46 +131,6 @@ def predict():
     img_base64 = base64.b64encode(rawBytes.read())
     
     return jsonify({'status':'success'},{'dog':str(doggo_yn)},{'human':str(human_yn)},{'race':race},{'dream':str(img_base64)})
-
-
-
-
-# def mask_image():
-	# # print(request.files , file=sys.stderr)
-	# file = request.files['image'].read() ## byte file
-	# npimg = np.fromstring(file, np.uint8)
-    # #print(npimg.shape)
-	# #img = cv2.imdecode(npimg,cv2.IMREAD_COLOR)
-	# ######### Do preprocessing here ################
-	# # img[img > 150] = 0
-	# ## any random stuff do here
-	# ################################################
-	# #img = Image.fromarray(img.astype("uint8"))
-	# #rawBytes = io.BytesIO()
-	# #img.save(rawBytes, "JPEG")
-	# rawBytes.seek(0)
-	# img_base64 = base64.b64encode(rawBytes.read())
-	# return jsonify({'status':str(img_base64)})
-
-
-
-
-# web page that handles user query and displays model results
-@app.route('/go')
-def go():
-    # save user input in query
-    query = request.args.get('query', '') 
-
-    # use model to predict classification for query
-    classification_labels = model.predict([query])[0]
-    classification_results = dict(zip(df.columns[4:], classification_labels))
-
-    # This will render the go.html Please see that file. 
-    return render_template(
-        'go.html',
-        query=query,
-        classification_result=classification_results
-    )
 
 
 def main():
