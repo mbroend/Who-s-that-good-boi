@@ -1,6 +1,7 @@
 # Who-s-that-good-boi
 Repository for final Udacity submission for the Data Science Nanodegree.
 
+
 ## Problem statement
 Using machine learning models to classify images are one of the most profound uses of AI in modern times.
 With libraries such as tensorflow and keras one can utilize the work of very brilliant people to create a (relatively) fast web application that can achieve something we all care about.
@@ -15,8 +16,9 @@ This is achived using three seperate pretrained models with different strategies
 * To classify human/no-human the opencv haar-cascade algorithm is used. https://docs.opencv.org/trunk/db/d28/tutorial_cascade_classifier.html
 * To classify dog/no-dog the ResNet50 CNN is used
 * To classify the dog race transfer learning is used based on the InceptionResNetV2.
+** Features of CNN's are more generic in early layers and more original-dataset-specific in later layers
 ** The last layers are discared and a additional layers are added and trained on labeled dog images
-** As the dataset is small the weights of the CNN is kept the same  and only ending layers are trained
+** As the dataset is small the weights of the CNN is kept the same and only ending layers are trained
 
 
 ## Packages and other recourses
