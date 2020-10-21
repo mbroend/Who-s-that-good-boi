@@ -40,6 +40,7 @@ Serving the web application:
 * Open a browser and enter your local ip address
 * Make sure port 5000 is allowed in your firewall
 ** Alternatively alter app.run(host='0.0.0.0', port=5000, debug=True) to app.run(host='127.0.0.1', port=5000, debug=True) in app.py
+
 (Re)training the model:
 * cd to models folder
 * run model_train.py script
